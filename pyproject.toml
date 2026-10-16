@@ -1,0 +1,10 @@
+[project]
+name = "comfyui-llm-text"
+version = "0.2.0"
+description = "Text-only LLM node for OpenAI, Gemini, Anthropic and OpenRouter."
+requires-python = ">=3.10"
+dependencies = ["requests>=2.31.0"]
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "LLM Text"
