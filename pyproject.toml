@@ -1,10 +1,16 @@
 [project]
-name = "comfyui-llm-text"
+name = "llm-text"
 version = "0.2.0"
 description = "Text-only LLM node for OpenAI, Gemini, Anthropic and OpenRouter."
 requires-python = ">=3.10"
 dependencies = ["requests>=2.31.0"]
+license = { file = "LICENSE" }
+
+[project.urls]
+Repository = "https://github.com/workingdad365/llm_text_node"
+Documentation = "https://github.com/workingdad365/llm_text_node#readme"
+"Bug Tracker" = "https://github.com/workingdad365/llm_text_node/issues"
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "workingdad365"
 DisplayName = "LLM Text"

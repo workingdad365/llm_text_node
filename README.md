@@ -158,3 +158,7 @@ Model discovery does not guarantee compatibility with the generation endpoint. O
 - **The same response keeps appearing:** disable Cache Response to force a new API request. Also disable it when testing a changed server-side environment key.
 - **Settings differ from a loaded workflow:** browser-saved provider preferences take precedence. Remove the relevant `LLMText.settings.<Provider>` entry to use the workflow's values.
 - **Old UI after updating:** restart ComfyUI and refresh the browser page; try a hard refresh if necessary.
+
+## License
+
+[MIT](LICENSE).
