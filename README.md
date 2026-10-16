@@ -1,5 +1,7 @@
 # LLM Text for ComfyUI
 
+![LLM Text for ComfyUI — OpenAI, Gemini, Anthropic, and OpenRouter](assets/banner.png)
+
 A text-generation node for ComfyUI with OpenAI, Gemini, Anthropic, and OpenRouter support. Turn text into prompts, translations, summaries, or other text and pass the result to the rest of your workflow as a `STRING`.
 
 ## Features

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+  <title id="title">LLM Text</title>
+  <desc id="desc">A text node with connected input and output ports.</desc>
+  <rect width="400" height="400" rx="80" fill="#0d1923"/>
+  <rect x="66" y="76" width="268" height="248" rx="40" fill="#102a32" stroke="#64efd0" stroke-width="3"/>
+  <path d="M100 113h35" stroke="#64efd0" stroke-width="6" stroke-linecap="round"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M126 161h112m-56 0v108" stroke="#effffb" stroke-width="15"/>
+    <path d="m264 207 26 26-26 26" stroke="#64efd0" stroke-width="10"/>
+    <path d="M30 200h36m268 0h36" stroke="#64efd0" stroke-width="4"/>
+  </g>
+  <g fill="#64efd0">
+    <circle cx="66" cy="200" r="10"/>
+    <circle cx="334" cy="200" r="10"/>
+  </g>
+</svg>

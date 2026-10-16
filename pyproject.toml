@@ -1,6 +1,6 @@
 [project]
 name = "llm-text"
-version = "0.2.0"
+version = "0.2.1"
 description = "Text-only LLM node for OpenAI, Gemini, Anthropic and OpenRouter."
 requires-python = ">=3.10"
 dependencies = ["requests>=2.31.0"]
@@ -14,3 +14,5 @@ Documentation = "https://github.com/workingdad365/llm_text_node#readme"
 [tool.comfy]
 PublisherId = "workingdad365"
 DisplayName = "LLM Text"
+Icon = "https://raw.githubusercontent.com/workingdad365/llm_text_node/main/assets/icon.png"
+Banner = "https://raw.githubusercontent.com/workingdad365/llm_text_node/main/assets/banner.png"
