@@ -9,7 +9,9 @@ async function setup(fetchApi, storage = new Map()) {
     const document = { createElement: () => ({ style: {}, listeners: {}, setAttribute() {},
         addEventListener(name, callback) { this.listeners[name] = callback; } }) };
     const localStorage = { getItem: (name) => storage.get(name) ?? null, setItem: (name, value) => storage.set(name, value) };
-    vm.runInNewContext(source, { document, localStorage, app: { registerExtension(value) { extension = value; } }, api: { fetchApi } });
+    const notifications = [];
+    vm.runInNewContext(source, { document, localStorage, app: { registerExtension(value) { extension = value; },
+        extensionManager: { toast: { add(message) { notifications.push(message); } } } }, api: { fetchApi } });
     class Node {
         constructor() {
             this.widgets = Object.entries({ text: "", provider: "OpenRouter", api_key: "key", model: "manual-model", system_prompt: "", max_tokens: 4096,
@@ -36,6 +38,7 @@ async function setup(fetchApi, storage = new Map()) {
     node.onNodeCreated();
     const find = (name) => node.widgets.find((widget) => widget.name === name);
     find.node = node;
+    find.notifications = notifications;
     return find;
 }
 
@@ -51,7 +54,7 @@ test("model discovery preserves manual model until selected and uses POST", asyn
     widget("Available Models").callback("vendor/model");
     assert.equal(widget("model").value, "vendor/model");
     assert.equal(widget("Available Models").value, "vendor/model");
-    assert.match(widget("Model Info").value, /required/);
+    assert.deepEqual(Array.from(widget("reasoning").options.values), ["Minimum", "Model default", "low", "high"]);
     assert.equal(widget("Available Models").serialize, false);
 });
 
@@ -62,6 +65,7 @@ test("layout places system first, input second, and fetch below model", async ()
     assert.equal(names[1], "text");
     assert.equal(names[names.indexOf("model") + 1], "Fetch Models");
     assert.equal(widget("model").hidden, true);
+    assert.equal(widget("Model Info"), undefined);
 });
 
 test("key mask preserves real key for API and serialization, including edits", async () => {
@@ -235,6 +239,20 @@ test("provider change clears credentials and ignores pending catalog", async () 
     assert.equal(widget("api_key").value, "");
     assert.equal(widget("model").value, "");
     assert.equal(widget("Available Models").value, "Fetch models first");
+});
+
+test("model discovery shows loading on the button and reports failures through a toast", async () => {
+    let resolve;
+    const widget = await setup(() => new Promise((done) => { resolve = done; }));
+    const pending = widget("Fetch Models").callback();
+    assert.equal(widget("Fetch Models").label, "Loading models...");
+    resolve({ ok: false, json: async () => ({ error: "Invalid API key" }) });
+    await pending;
+    assert.equal(widget("Fetch Models").label, "Fetch Models");
+    assert.equal(widget.notifications.length, 1);
+    assert.equal(widget.notifications[0].severity, "error");
+    assert.match(widget.notifications[0].detail, /Invalid API key/);
+    assert.equal(widget("Model Info"), undefined);
 });
 
 test("provider settings restore independently after switching and reloading", async () => {

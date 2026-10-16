@@ -140,7 +140,6 @@ app.registerExtension({
             for (const [name, label] of Object.entries(labels)) { if (find(name)) find(name).label = label; }
             let records = [];
             let requestId = 0;
-            const status = this.addWidget("text", "Model Info", "Fetch models to browse available IDs.", () => {}, { serialize: false });
             const picker = this.addWidget("combo", "Available Models", "Fetch models first", (value) => {
                 if (!records.some((record) => record.id === value)) return;
                 find("model").value = value;
@@ -173,19 +172,13 @@ app.registerExtension({
                 effortWidget.options ??= {};
                 effortWidget.options.values = ["Minimum", "Model default", ...efforts];
                 if (!effortWidget.options.values.includes(effortWidget.value)) effortWidget.value = "Minimum";
-                if (find("provider").value === "OpenRouter" && reasoning) {
-                    const efforts = reasoning.supported_efforts;
-                    status.value = `Reasoning: ${reasoning.mandatory === true ? "required" : reasoning.mandatory === false ? "optional" : "unknown"}; efforts: ${Array.isArray(efforts) ? efforts.join(", ") : efforts === null ? "all" : "model default"}`;
-                } else {
-                    status.value = record ? `${record.id} | Context: ${record.context_length ?? record.inputTokenLimit ?? "N/A"}` : "Fetch models and select Available Models.";
-                }
             };
             this.llmTextUpdateInfo = updateInfo;
             const fetchButton = this.addWidget("button", "Fetch Models", null, async () => {
                 const current = ++requestId;
                 const provider = find("provider").value;
                 const key = find("api_key").value;
-                status.value = "Loading models...";
+                fetchButton.label = "Loading models...";
                 this.setDirtyCanvas(true, true);
                 try {
                     const response = await api.fetchApi("/llm_text/models", {
@@ -202,15 +195,22 @@ app.registerExtension({
                         picker.options.values = ["No models found"];
                         picker.value = "No models found";
                     }
-                    status.value = `${records.length} models loaded. Select Available Models.`;
                 } catch (error) {
-                    if (current === requestId) status.value = `Error: ${error.message}`;
+                    if (current === requestId && provider === find("provider").value && key === find("api_key").value) {
+                        const message = `Model discovery failed: ${error.message}`;
+                        if (app.extensionManager?.toast?.add) {
+                            app.extensionManager.toast.add({ severity: "error", summary: "LLM Text", detail: message, life: 10000 });
+                        } else {
+                            app.ui?.dialog?.show(message);
+                        }
+                    }
                 } finally {
+                    if (current === requestId) fetchButton.label = "Fetch Models";
                     this.setDirtyCanvas(true, true);
                 }
             }, { serialize: false });
-            for (const widget of [status, picker, fetchButton]) widget.serialize = false;
-            const controls = [fetchButton, picker, status];
+            for (const widget of [picker, fetchButton]) widget.serialize = false;
+            const controls = [fetchButton, picker];
             this.widgets = this.widgets.filter((widget) => !controls.includes(widget));
             this.widgets.splice(this.widgets.indexOf(find("model")) + 1, 0, ...controls);
             const systemWidget = find("system_prompt");
@@ -232,6 +232,7 @@ app.registerExtension({
                 previous?.apply(providerWidget, args);
                 activeProvider = providerWidget.value;
                 requestId++;
+                fetchButton.label = "Fetch Models";
                 records = [];
                 picker.options.values = ["Fetch models first"];
                 picker.value = "Fetch models first";
@@ -240,7 +241,6 @@ app.registerExtension({
                 find("reasoning").value = "Minimum";
                 restoreSettings();
                 updateInfo();
-                status.value = find("api_key").value ? "Provider changed. Saved API key restored. Fetch models." : "Provider changed. Enter an API key or use a server environment variable.";
                 this.setDirtyCanvas(true, true);
             };
             const modelWidget = find("model");
