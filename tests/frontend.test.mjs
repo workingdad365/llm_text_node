@@ -14,7 +14,7 @@ async function setup(fetchApi, storage = new Map()) {
         extensionManager: { toast: { add(message) { notifications.push(message); } } } }, api: { fetchApi } });
     class Node {
         constructor() {
-            this.widgets = Object.entries({ text: "", provider: "OpenRouter", api_key: "key", model: "manual-model", system_prompt: "", max_tokens: 4096,
+            this.widgets = Object.entries({ system_prompt: "", text: "", provider: "OpenRouter", api_key: "key", model: "manual-model", max_tokens: 4096,
                 timeout: 120, reasoning: "Minimum", provider_slug: "", routing_suffix: "Default", cache_response: true })
                 .map(([name, value]) => ({ name, value }));
             this.size = [100, 100];

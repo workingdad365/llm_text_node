@@ -213,17 +213,12 @@ app.registerExtension({
             const controls = [fetchButton, picker];
             this.widgets = this.widgets.filter((widget) => !controls.includes(widget));
             this.widgets.splice(this.widgets.indexOf(find("model")) + 1, 0, ...controls);
-            const systemWidget = find("system_prompt");
-            this.widgets.splice(this.widgets.indexOf(systemWidget), 1);
-            this.widgets.unshift(systemWidget);
             const textWidget = find("text");
             if (textWidget) {
                 textWidget.options ??= {};
                 textWidget.options.getHeight = () => 32;
                 textWidget.options.getMinHeight = () => 32;
                 textWidget.options.getMaxHeight = () => 32;
-                this.widgets.splice(this.widgets.indexOf(textWidget), 1);
-                this.widgets.splice(1, 0, textWidget);
             }
             const providerWidget = find("provider");
             const previous = providerWidget.callback;

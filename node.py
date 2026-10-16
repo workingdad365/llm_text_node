@@ -8,6 +8,7 @@ class LLMText:
     def INPUT_TYPES(cls):
         return {"required": {
             "system_prompt": ("STRING", {"multiline": True, "default": "You are a helpful assistant. Return only the requested text."}),
+            "text": ("STRING", {"multiline": True, "defaultInput": True, "default": "", "tooltip": "Connect the external STRING to process. Convert to a widget for manual input."}),
             "provider": (list(BASES),),
             "api_key": ("STRING", {"default": "", "tooltip": "API key for the selected provider. Entered keys are stored in the browser and workflow."}),
             "model": ("STRING", {"default": "", "tooltip": "Enter a model ID or use Fetch Models and select a model."}),
@@ -17,7 +18,6 @@ class LLMText:
             "provider_slug": ("STRING", {"default": "", "tooltip": "OpenRouter only. Exact provider slugs, comma-separated. Restricts routing to these providers."}),
             "routing_suffix": (["Default", ":nitro", ":floor"], {"tooltip": "OpenRouter only. Nitro prioritizes throughput; floor prioritizes price. Default preserves a suffix entered in Model."}),
             "cache_response": ("BOOLEAN", {"default": True, "tooltip": "Reuse the result for unchanged inputs. Turn off to request a new response every run."}),
-            "text": ("STRING", {"multiline": True, "defaultInput": True, "default": "", "tooltip": "Connect the external STRING to process. Convert to a widget for manual input."}),
         }}
 
     RETURN_TYPES = ("STRING",)

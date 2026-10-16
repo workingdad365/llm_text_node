@@ -171,10 +171,11 @@ class ProviderTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 p.reasoning_options(record, mode)
 
-    def test_schema_system_first_external_input_last(self):
+    def test_schema_matches_display_order(self):
         inputs = node.LLMText.INPUT_TYPES()["required"]
-        self.assertEqual(next(iter(inputs)), "system_prompt")
-        self.assertEqual(list(inputs)[-1], "text")
+        self.assertEqual(list(inputs), ["system_prompt", "text", "provider", "api_key", "model",
+                                       "max_tokens", "timeout", "reasoning", "provider_slug",
+                                       "routing_suffix", "cache_response"])
         self.assertTrue(inputs["text"][1]["defaultInput"])
 
 
