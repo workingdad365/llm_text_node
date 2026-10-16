@@ -120,10 +120,14 @@ class ProviderTests(unittest.TestCase):
             p.request_json("OpenAI", "secret-key", "GET", "/models")
         self.assertNotIn("secret-key", str(caught.exception))
 
-    def test_environment_and_cache_contract(self):
-        with patch.dict(p.os.environ, {"OPENAI_API_KEY": "env-key"}):
-            self.assertEqual(p.resolve_key("OpenAI", ""), "env-key")
-            self.assertEqual(p.resolve_key("OpenAI", "explicit"), "explicit")
+    def test_explicit_key_required_and_cache_contract(self):
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "env-key", "GEMINI_API_KEY": "env-key",
+                                      "ANTHROPIC_API_KEY": "env-key", "OPENROUTER_API_KEY": "env-key"}):
+            for provider in p.BASES:
+                self.assertEqual(p.resolve_key(provider, " explicit "), "explicit")
+                for value in ("", "   ", None):
+                    with self.subTest(provider=provider, value=value), self.assertRaisesRegex(ValueError, "Enter an API key"):
+                        p.resolve_key(provider, value)
         self.assertTrue(math.isnan(node.LLMText.IS_CHANGED(cache_response=False)))
         self.assertEqual(node.LLMText.IS_CHANGED(), "cached")
         self.assertEqual(node.LLMText.RETURN_TYPES, ("STRING",))

@@ -45,7 +45,7 @@ function addKeyWidget(node) {
     input.type = "text";
     input.autocomplete = "off";
     input.spellcheck = false;
-    input.placeholder = "API key or server environment variable";
+    input.placeholder = "API key for the selected provider";
     input.setAttribute("aria-label", "API Key");
     input.style.cssText = "width:100%;box-sizing:border-box;background:var(--comfy-input-bg,#222);color:var(--input-text,#ddd);border:1px solid #555;border-radius:5px;padding:6px;font:inherit;";
     const sync = () => { input.value = editing ? key : maskKey(key); };

@@ -1,6 +1,6 @@
 [project]
 name = "llm-text"
-version = "1.0.3"
+version = "1.0.4"
 description = "Text-only LLM node for OpenAI, Gemini, Anthropic and OpenRouter."
 requires-python = ">=3.10"
 dependencies = ["requests>=2.31.0"]

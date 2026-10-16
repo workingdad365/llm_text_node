@@ -1,6 +1,5 @@
 """Text-only provider clients and model discovery."""
 
-import os
 import re
 import logging
 from copy import deepcopy
@@ -15,10 +14,6 @@ BASES = {
     "Gemini": "https://generativelanguage.googleapis.com/v1beta",
     "Anthropic": "https://api.anthropic.com/v1",
     "OpenRouter": "https://openrouter.ai/api/v1",
-}
-ENV_KEYS = {
-    "OpenAI": "OPENAI_API_KEY", "Gemini": "GEMINI_API_KEY",
-    "Anthropic": "ANTHROPIC_API_KEY", "OpenRouter": "OPENROUTER_API_KEY",
 }
 EFFORTS = ["none", "minimal", "low", "medium", "high", "xhigh", "max"]
 _catalog = None
@@ -35,9 +30,9 @@ class APIError(RuntimeError):
 def resolve_key(provider, api_key):
     if provider not in BASES:
         raise ValueError("Unknown provider.")
-    key = (api_key or "").strip() or os.getenv(ENV_KEYS[provider], "").strip()
+    key = (api_key or "").strip()
     if not key:
-        raise ValueError(f"Enter an API key or set {ENV_KEYS[provider]} on the ComfyUI server.")
+        raise ValueError(f"Enter an API key for {provider}.")
     return key
 
 

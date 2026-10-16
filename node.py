@@ -9,7 +9,7 @@ class LLMText:
         return {"required": {
             "system_prompt": ("STRING", {"multiline": True, "default": "You are a helpful assistant. Return only the requested text."}),
             "provider": (list(BASES),),
-            "api_key": ("STRING", {"default": "", "tooltip": "API key, or leave empty to use the server environment variable. Entered keys are stored in the workflow."}),
+            "api_key": ("STRING", {"default": "", "tooltip": "API key for the selected provider. Entered keys are stored in the browser and workflow."}),
             "model": ("STRING", {"default": "", "tooltip": "Enter a model ID or use Fetch Models and select a model."}),
             "max_tokens": ("INT", {"default": 4096, "min": 16, "max": 1048576, "tooltip": "Output budget, including reasoning on some providers."}),
             "timeout": ("INT", {"default": 120, "min": 10, "max": 1800}),

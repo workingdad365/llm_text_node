@@ -9,7 +9,6 @@ A text-generation node for ComfyUI with OpenAI, Gemini, Anthropic, and OpenRoute
 - Fetch available models and select them directly in the node.
 - Customize the system prompt, output token budget, timeout, and reasoning effort.
 - Remember API keys and settings separately for each provider in your browser.
-- Use server environment variables instead of entering API keys in the UI.
 - Control OpenRouter provider routing and price/throughput preferences.
 - Reuse cached responses or request a new response on every execution.
 - Return the final text without separate reasoning blocks.
@@ -39,7 +38,7 @@ To update, pull the latest changes or replace the node's files, install any upda
 ## Quick start
 
 1. Select a **Provider**.
-2. Enter its **API Key**, or configure a server environment variable as described below.
+2. Enter its **API Key**. Previously saved keys are restored automatically in the same browser.
 3. Click **Fetch Models**, then choose a model from **Available Models**.
 4. Enter your instructions in **System Prompt**.
 5. Connect a `STRING` source to the node's `text` input. To type text directly, use ComfyUI's input-to-widget conversion.
@@ -59,7 +58,7 @@ Return only the prompt, without explanations or quotation marks.
 | --- | --- |
 | System Prompt | Instructions that guide the model's response. |
 | Provider | OpenAI, Gemini, Anthropic, or OpenRouter. |
-| API Key | Credentials for the selected provider. Leave empty to use a server environment variable. |
+| API Key | Required credentials for the selected provider, saved in the browser and workflow. |
 | Fetch Models | Retrieve the provider's current model catalog. |
 | Available Models | Select the model used for generation. A saved selection is shown even before fetching the catalog again. |
 | Max Output Tokens | Output budget, including reasoning tokens on some models. Default: `4096`; node range: `16–1048576`. The model may impose a lower limit. |
@@ -92,24 +91,15 @@ Switching back to a provider restores its saved settings. When loading a workflo
 
 **Entered API keys are also stored in plain text in saved workflows.** Browser storage is not encrypted by this node either. The masked input is only a display feature: normally the first and last four characters are visible, while editing uses a password field.
 
-To remove a browser-saved key, select its provider and clear **API Key**. To remove it from a workflow, save the workflow again with that field empty; previously exported copies still contain the old value. Before sharing a workflow, remove entered credentials or use environment variables instead.
+To remove a browser-saved key, select its provider and clear **API Key**. To remove it from a workflow, save the workflow again with that field empty; previously exported copies still contain the old value. Remove entered credentials before sharing a workflow.
 
 You can remove all saved preferences through your browser's site-data controls, or remove individual `LLMText.*` entries in the browser's developer tools under Local Storage. Removing a browser entry does not erase credentials already embedded in workflow files.
 
 If browser storage is unavailable, the node can still retain values through workflow saving. The API key field's tooltip reports a browser-storage failure after editing.
 
-### Server environment variables
+### API requests
 
-Leave **API Key** empty and set the corresponding variable in the environment of the process running ComfyUI:
-
-| Provider | Environment variable |
-| --- | --- |
-| OpenAI | `OPENAI_API_KEY` |
-| Gemini | `GEMINI_API_KEY` |
-| Anthropic | `ANTHROPIC_API_KEY` |
-| OpenRouter | `OPENROUTER_API_KEY` |
-
-An entered key takes precedence over the environment variable. Environment-variable values are read on the server and are not copied into the key widget or workflow by this node. `.env` files are **not** automatically loaded.
+Enter credentials through **API Key**. The node does not read server environment variables or load `.env` files. An empty key produces an error when generating text.
 
 API requests are made by the ComfyUI server. Keys entered in the browser are sent to that server for model discovery and generation, then used to authenticate with the selected provider.
 
@@ -154,10 +144,10 @@ Model discovery does not guarantee compatibility with the generation endpoint. O
 
 ## Troubleshooting
 
-- **No models or authentication errors:** verify the selected provider, key, account access, and server environment variables, then fetch the models again.
+- **No models or authentication errors:** verify the selected provider, entered key, and account access, then fetch the models again.
 - **Output token limit reached:** increase Max Output Tokens. Reasoning may share this budget. Truncated responses are reported as errors rather than returned as complete text.
 - **Timeout:** increase Timeout or choose a faster model. Network and provider errors are surfaced as node errors.
-- **The same response keeps appearing:** disable Cache Response to force a new API request. Also disable it when testing a changed server-side environment key.
+- **The same response keeps appearing:** disable Cache Response to force a new API request.
 - **Settings differ from a loaded workflow:** browser-saved provider preferences take precedence. Remove the relevant `LLMText.settings.<Provider>` entry to use the workflow's values.
 - **Old UI after updating:** restart ComfyUI and refresh the browser page; try a hard refresh if necessary.
 
